@@ -15,7 +15,13 @@ jobs:
         run: sudo apt-get install -y binutils-dev libssl-dev uuid-dev
 
       - name: "Setup clang"
-        uses: egor-tensin/setup-clang@v1
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 12
+          rm llvm.sh
 
       - name: "Setup cmake"
         run: cmake --version
@@ -26,6 +32,8 @@ jobs:
           gil update
 
       - name: "Build"
+        env:
+          CMAKE_CXX_FLAGS: "-stdlib=libc++"
         run: |
           cd build
           ./unix.sh
